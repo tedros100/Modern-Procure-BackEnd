@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  backend:
+    build: .
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/ted
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=strongpassword
+      - AUTH_TOKEN_URL=http://localhost:8081/oauth/token
+    depends_on:
+      - db
+    networks:
+      - modernprocure-network
+
+  db:
+    image: postgres:14-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=ted
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=strongpassword
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - modernprocure-network
+
+volumes:
+  postgres_data:
+
+networks:
+  modernprocure-network:
+    driver: bridge 
